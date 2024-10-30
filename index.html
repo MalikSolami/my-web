@@ -34,40 +34,37 @@
     <p id="visitorLabel">عدد الضحايا: <span id="visitorCount">0</span></p>
 
     <!-- Firebase SDKs -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    <script>
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-        // إعداد Firebas
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDb_YiaPOGAx-QC3RKofwNOwdgBTA7oYA0",
-  authDomain: "t222-2b48b.firebaseapp.com",
-  databaseURL: "https://t222-2b48b-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "t222-2b48b",
-  storageBucket: "t222-2b48b.appspot.com",
-  messagingSenderId: "717847642006",
-  appId: "1:717847642006:web:d260b191078c9d57f967b7"
+    apiKey: "API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
 };
 
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-        // تهيئة التطبيق وقاعدة البيانات
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+const visitorCountRef = ref(database, 'visitorCount');
 
-        // تحديث عداد الزيارات
-        const visitorCountRef = ref(database, 'visitorCount');
-        
-        runTransaction(visitorCountRef, (currentValue) => {
-            return (currentValue || 0) + 1; // زيادة العداد بواحد لكل زيارة
-        }).then((result) => {
-            document.getElementById("visitorCount").innerText = result.snapshot.val();
-        }).catch((error) => {
-            console.error("Error updating visitor count:", error);
-        });
+runTransaction(visitorCountRef, (currentValue) => {
+    return (currentValue || 0) + 1;
+}).then((result) => {
+    if (result.snapshot) {
+        document.getElementById("visitorCount").innerText = result.snapshot.val();
+    } else {
+        console.error("No snapshot received");
+    }
+}).catch((error) => {
+    console.error("Error updating visitor count:", error);
+});
+
     </script>
 </body>
 </html>
